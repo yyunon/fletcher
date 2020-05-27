@@ -256,6 +256,8 @@ std::string GenerateConfigString(const arrow::Field &field, int level) {
   int epc = fletcher::GetUIntMeta(field, fletcher::meta::VALUE_EPC, 1);
   int lepc = fletcher::GetUIntMeta(field, fletcher::meta::LIST_EPC, 1);
 
+  bool has_children = false;
+
   if (ct == ConfigType::PRIM) {
     auto w = GetWidth(field.type().get());
     ret += "prim(" + w->ToString();
@@ -264,13 +266,18 @@ std::string GenerateConfigString(const arrow::Field &field, int level) {
     ret += "listprim(8";
     level++;
   } else if (ct == ConfigType::LIST) {
-    if (GetConfigType(field.type()->child(0)->type().get()) == ConfigType::PRIM) {
-      ret += "list";
-    } else {
+    // check for other listprims, lists of primitives that are not nullable inside the list.
+    if ((GetConfigType(field.type()->child(0)->type().get()) == ConfigType::PRIM) && (!field.type()->child(0)->nullable())) {
+      auto w = GetWidth(field.type()->child(0)->type().get());
+      ret += "listprim(" + w->ToString();
+    }
+    else {
+      has_children = true;
       ret += "list(";
     }
     level++;
   } else if (ct == ConfigType::STRUCT) {
+    has_children = true;
     ret += "struct(";
     level++;
   }
@@ -288,12 +295,14 @@ std::string GenerateConfigString(const arrow::Field &field, int level) {
     ret += "lepc=" + std::to_string(epc);
   }
 
-  // Append children
-  for (int c = 0; c < field.type()->num_children(); c++) {
-    auto child = field.type()->child(c);
-    ret += GenerateConfigString(*child);
-    if (c != field.type()->num_children() - 1)
-      ret += ",";
+  if (has_children) {
+    // Append children
+    for (int c = 0; c < field.type()->num_children(); c++) {
+      auto child = field.type()->child(c);
+      ret += GenerateConfigString(*child);
+      if (c != field.type()->num_children() - 1)
+        ret += ",";
+    }
   }
 
   for (; level > 0; level--)
