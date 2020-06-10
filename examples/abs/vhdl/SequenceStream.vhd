@@ -26,6 +26,8 @@ library work;
 use work.Stream_pkg.all;
 use work.UtilInt_pkg.all;
 
+-- This unit increases the dimensionality of a stream by sequencing it according to the incoming length values.
+
 entity SequenceStream is
     generic (
 
@@ -83,7 +85,7 @@ architecture Behavioral of SequenceStream is
   signal saved_valid            : std_logic;
   
   
-  -- Internal counter
+  -- Internal sequence counter
   signal remaining              : signed(LENGTH_WIDTH downto 0);
   
   -- Length buffer ourpur stream.
@@ -124,13 +126,10 @@ reg_proc: process (clk) is
       -- We're ready for new data on the input unless otherwise specified.
       in_ready_s <= '1';
       
+      -- Length buffer ready should be zero by default, only querying a value when it's necessary.
       b_ready <= '0';
       
-      
-      if remaining <= 0 then 
-        b_ready <= '1';
-      end if;
-      
+      -- Grabbing the handshaked data and decrementing the sequence counter.
       if b_ready = '1' and b_valid = '1' then
         remaining <= remaining + signed(b_data);
         b_ready <= '0';
@@ -211,6 +210,17 @@ reg_proc: process (clk) is
         end if;
 
       end if;
+      
+      -- When the current sequency is fullfilled, a new length value is queried.
+      if remaining <= 0 then 
+        b_ready <= '1';
+        
+        -- If the module operates in blocking mode, new inputs are not allowed until a length value arrives.
+        if BLOCKING then
+            in_ready_s <= '0';
+        end if; 
+      end if;
+      
       -- Reset overrides everything.
       if reset = '1' then
         in_ready_s  <= '0';
