@@ -142,7 +142,6 @@ element_counter: StreamElementCounter
       reset                     => reset,
       in_valid                  => dly_out_valid,
       in_ready                  => dly_out_ready,
-      in_data                   => dly_out_data,
       in_dvalid                 => '1',
       in_count                  => "00000001",
       in_length_valid           => count_valid,
@@ -150,9 +149,12 @@ element_counter: StreamElementCounter
       in_length_data            => count,
       out_valid                 => BatchOut_vectors_valid,
       out_ready                 => BatchOut_vectors_ready,
-      out_last                  => BatchOut_vectors_last,
-      out_data                  => BatchOut_vectors
+      out_last                  => BatchOut_vectors_last
     );
+    
+    --Connect data lanes outside the module
+    
+    BatchOut_vectors <= dly_out_data;
     
     dly: StreamSliceArray
     generic map (

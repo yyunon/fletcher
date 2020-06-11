@@ -56,7 +56,6 @@ package SequenceStream_pkg is
     in_ready                    : out std_logic;
     in_count                    : in  std_logic_vector(LENGTH_WIDTH-1 downto 0) := std_logic_vector(to_unsigned(1, LENGTH_WIDTH));
     in_dvalid                   : in  std_logic := '1';
-    in_data                     : in  std_logic_vector(DATA_WIDTH-1 downto 0);
     
     -- Input size stream.
     in_length_valid             : in  std_logic;
@@ -66,9 +65,7 @@ package SequenceStream_pkg is
     -- Output stream.
     out_valid                   : out std_logic;
     out_ready                   : in  std_logic;
-    out_last                    : out std_logic;
-    out_data                    : out std_logic_vector(DATA_WIDTH-1 downto 0)
-
+    out_last                    : out std_logic
   );
   end component;
 
