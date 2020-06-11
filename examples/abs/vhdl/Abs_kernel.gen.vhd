@@ -134,7 +134,6 @@ element_counter: StreamElementCounter
     generic map (
       MIN_BUFFER_DEPTH           => 10,
       LENGTH_WIDTH               => 8,
-      DATA_WIDTH                 => 64,
       BLOCKING                   => false
     )
     port map (

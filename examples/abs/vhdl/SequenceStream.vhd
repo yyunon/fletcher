@@ -106,12 +106,12 @@ length_buffer: StreamBuffer
       out_data                  => b_data
     );
     
-comb_proc: process (in_valid, out_ready, in_count, in_dvalid, remaining) is
+comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, b_data, remaining) is
     variable diff : signed(LENGTH_WIDTH downto 0);
     variable last : std_logic;
   begin
-    -- We're ready for new data on the input if the output is ready and a new sequence count is not being handshaked.
-      in_ready_s <= out_ready and (not (b_ready and b_valid));
+    -- We're ready for new data on the input if the output is ready.
+      in_ready_s <= out_ready;
       out_last_s <= '0';
       out_valid_s <= in_valid;
       
@@ -125,7 +125,7 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, remaining) is
       diff := signed(remaining) - signed(in_count);
           
       --Last is asserted if we reached the end of the sequence.    
-      if diff <= 0 and in_dvalid = '1' then
+      if diff = 0 and in_dvalid = '1' then
         last := '1';
       else
         last := '0';
@@ -148,14 +148,15 @@ reg_proc: process (clk) is
   begin
     if rising_edge(clk) then
     
-      -- Grabbing the handshaked data and decrementing the sequence counter.
+      -- If a new input value is being handshaked, the current count is saved.
+      if in_valid = '1' and in_ready_s = '1' then
+        remaining <= remaining_next;
+      end if;
+      
+      -- If a new length value is being handsaked, the count is adjusted.
       if b_ready = '1' and b_valid = '1' then
         remaining <= remaining + signed(b_data);
         b_ready <= '0';
-      end if;
-    
-      if in_valid = '1' and in_ready_s = '1' then
-        remaining <= remaining_next;
       end if;
       
       -- Length buffer ready should be zero by default, only querying a value when it's necessary.

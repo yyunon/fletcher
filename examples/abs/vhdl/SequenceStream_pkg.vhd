@@ -35,9 +35,6 @@ package SequenceStream_pkg is
     -- Width of the lenght input and internal counter.
     LENGTH_WIDTH                : natural := 8;
     
-    -- Width of the stream data vector.
-    DATA_WIDTH                  : natural;
-    
     -- No transaction is accepted on the data stream when there's no handshaked length in the buffer.
     -- In case of a non-blocking setup, incoming trasactions are accepted and the counter is started in advance.
     -- In this case, the source has to make sure that there are less incoming values than the next arriving length value.
