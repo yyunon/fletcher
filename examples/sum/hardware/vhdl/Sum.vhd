@@ -16,6 +16,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.Sum_pkg.all;
+
 -- This kernel sums the values of an integer column.
 
 entity Sum is
@@ -62,18 +65,36 @@ architecture Implementation of Sum is
   
   -- Current state register and next state signal.
 	signal state, state_next : state_t;
-
-  -- Accumulate the total sum here
-  signal accumulator, accumulator_next : signed(63 downto 0);  
+  
+  -- Sum output stream.
+  signal sum_out_valid               : std_logic;
+  signal sum_out_ready               : std_logic;
+  signal sum_out_last                : std_logic;
+  signal sum_out_data                : std_logic_vector(63 downto 0);
   
 begin
+
+
+sum_kernel: Sum_ExampleBatch_Reduce
+    port map (
+      clk                       => kcd_clk,
+      reset                     => reset,
+      in_valid                  => ExampleBatch_number_valid,
+      in_ready                  => ExampleBatch_number_ready,
+      in_last                   => ExampleBatch_number_last,
+      in_data                   => ExampleBatch_number,
+      out_valid                 => sum_out_valid,
+      out_ready                 => sum_out_ready,
+      out_last                  => sum_out_last,
+      out_data                  => sum_out_data
+    );
 
   ------------------------------------------------------------------------------
   -- Sum implementation
   ------------------------------------------------------------------------------
   
   -- Put the accumulator value on the result register.
-  result <= std_logic_vector(accumulator);
+  result <= sum_out_data;
 
   -- We apply a two-process method coding style. That means we split up our
   -- whole circuit in a combinatorial part (logic) and a sequential part 
@@ -94,8 +115,8 @@ begin
     ExampleBatch_number_cmd_tag      <= (others => '0');
     
     ExampleBatch_number_unl_ready <= '0'; -- Do not accept "unlocks".
-    accumulator_next <= accumulator;      -- Retain accumulator value.
     state_next <= state;                  -- Retain current state.
+    sum_out_ready <= '0';
 
     -- For every state, we will determine the outputs of our combinatorial 
     -- circuit.
@@ -111,7 +132,6 @@ begin
         if start = '1' then
           state_next <= STATE_COMMAND;
         end if;
-        accumulator_next <= (others => '0');
 
       when STATE_COMMAND =>
         -- Command: we send a command to the generated interface.
@@ -151,22 +171,12 @@ begin
         busy <= '1';  
         idle <= '0';
         
-        -- In this state, we are always ready to process input from the "number"
-        -- stream. We don't have to generate backpressure to the generated 
-        -- interface. The addition can be performed in one cycle.
-        ExampleBatch_number_ready <= '1';
-        
-        -- When the generated interface has valid data for us on our "number"
-        -- stream, we just add the input to whatever the accumulator currently
-        -- holds and throw that on the output of this combinatorial circuit.
-        if ExampleBatch_number_valid = '1' then
-          accumulator_next <= accumulator + signed(ExampleBatch_number);
+        sum_out_ready <= '1';
           
-          -- All we have to do now is check if the last number was supplied.
-          -- If that is the case, we can go to the "done" state.
-          if ExampleBatch_number_last = '1' then
-            state_next <= STATE_UNLOCK;
-          end if;
+        -- All we have to do now is check if the last number was supplied.
+        -- If that is the case, we can go to the "done" state.
+        if sum_out_last = '1' then
+          state_next <= STATE_UNLOCK;
         end if;
         
       when STATE_UNLOCK =>
@@ -209,14 +219,11 @@ begin
     if rising_edge(kcd_clk) then
       -- Register the next state.
       state <= state_next;
-      -- Register the next accumulator value.
-      accumulator <= accumulator_next;
         
       -- If there is a (synchronous) reset, go to idle and make the 
       -- accumulator hold zero.
       if kcd_reset = '1' then
         state <= STATE_IDLE;
-        accumulator <= (others => '0');
       end if;
     end if;
   end process;
