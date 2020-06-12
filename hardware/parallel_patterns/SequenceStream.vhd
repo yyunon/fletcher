@@ -175,7 +175,6 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
       end if;
   end process;
 
-  -- Forward the internal "copies" of the control output signals.
   in_ready <= in_ready_s;
   out_valid <= out_valid_s;
   out_last <= out_last_s;
