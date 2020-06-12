@@ -144,33 +144,33 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
      
   end process;
     
-reg_proc: process (clk) is
-  begin
-    if rising_edge(clk) then
-    
-      -- If a new input value is being handshaked, the current count is saved.
-      if in_valid = '1' and in_ready_s = '1' then
-        remaining <= remaining_next;
-      end if;
-      
-      -- If a new length value is being handsaked, the count is adjusted.
-      if b_ready = '1' and b_valid = '1' then
-        remaining <= remaining + signed(b_data);
+  reg_proc: process (clk) is
+    begin
+      if rising_edge(clk) then
+        
+        -- If a new input value is being handshaked, the current count is saved.
+        if in_valid = '1' and in_ready_s = '1' then
+          remaining <= remaining_next;
+        end if;
+          
+        -- If a new length value is being handsaked, the count is adjusted.
+        if b_ready = '1' and b_valid = '1' then
+          remaining <= remaining + signed(b_data);
+          b_ready <= '0';
+        end if;
+          
+        -- Length buffer ready should be zero by default, only querying a value when it's necessary.
         b_ready <= '0';
+          
+        -- When the current sequency is fullfilled, a new length value is requested.
+        if remaining_next <= 0 then 
+          b_ready <= '1';
+        end if;
+          
+        if reset = '1' then
+          remaining <= to_signed(0, LENGTH_WIDTH+1);
+        end if;
       end if;
-      
-      -- Length buffer ready should be zero by default, only querying a value when it's necessary.
-      b_ready <= '0';
-      
-      -- When the current sequency is fullfilled, a new length value is requested.
-      if remaining_next <= 0 then 
-        b_ready <= '1';
-      end if;
-      
-      if reset = '1' then
-        remaining <= to_signed(0, LENGTH_WIDTH+1);
-      end if;
-    end if;
   end process;
 
   -- Forward the internal "copies" of the control output signals.
