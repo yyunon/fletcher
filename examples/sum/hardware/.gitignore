@@ -5,6 +5,9 @@ vhdl/*
 dot/*
 work/*
 !vhdl/Sum.vhd
+!vhdl/SumOp.vhd
+!vhdl/Sum_ExampleBatch_Reduce.vhd
+!vhdl/Sum_pkg.vhd
 .ipynb_checkpoints
 vsim.do
 transcript
