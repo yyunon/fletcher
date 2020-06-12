@@ -92,9 +92,6 @@ sum_kernel: Sum_ExampleBatch_Reduce
   ------------------------------------------------------------------------------
   -- Sum implementation
   ------------------------------------------------------------------------------
-  
-  -- Put the accumulator value on the result register.
-  result <= sum_out_data;
 
   -- We apply a two-process method coding style. That means we split up our
   -- whole circuit in a combinatorial part (logic) and a sequential part 
@@ -175,7 +172,8 @@ sum_kernel: Sum_ExampleBatch_Reduce
           
         -- All we have to do now is check if the last number was supplied.
         -- If that is the case, we can go to the "done" state.
-        if sum_out_last = '1' then
+        if sum_out_valid = '1' then
+          result <= sum_out_data;
           state_next <= STATE_UNLOCK;
         end if;
         
