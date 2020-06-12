@@ -27,7 +27,7 @@ library work;
 -- This unit is a simple accumulator. The data can be read any time after
 
 entity StreamAccumulator is
-    generic (
+  generic (
     
     -- Width of the stream data vector.
     DATA_WIDTH                  : natural
@@ -40,12 +40,16 @@ entity StreamAccumulator is
 
     -- Active-high synchronous reset.
     reset                       : in  std_logic;
+    
+    -- Init value
+    -- Loaded at reset and on 'last'.
+    init_value                  : in std_logic_vector(DATA_WIDTH-1 downto 0);
 
     -- Input stream.
     in_valid                    : in  std_logic;
     in_ready                    : out std_logic;
     in_data                     : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-    in_last                     : in std_logic;
+    in_last                     : in  std_logic;
 
     -- Output stream.
     out_valid                   : out std_logic;
@@ -85,13 +89,14 @@ reg_proc: process (clk) is
         if in_last = '1' then
           saved_last <= '1';
           initialized <= '0';
+          data <= init_value;
         end if;
       end if;
       
       if reset = '1' then
         initialized <= '0';
         saved_last  <= '0';
-        data <= (others => '0');
+        data <= init_value;
       end if;
     end if;
   end process;

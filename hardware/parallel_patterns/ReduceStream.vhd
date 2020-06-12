@@ -28,6 +28,9 @@ entity ReduceStream is
 
     -- Active-high synchronous reset.
     reset                       : in  std_logic;
+    
+    -- Init value for the accumulator.
+    acc_init_value              : in std_logic_vector(DATA_WIDTH-1 downto 0);
 
     -- Input stream.
     in_valid                    : in  std_logic;
@@ -130,6 +133,7 @@ element_counter: StreamElementCounter
       clk                       => clk,
       reset                     => reset,
       in_valid                  => acc_s_in_valid,
+      init_value                => acc_init_value,
       in_ready                  => acc_s_in_ready,
       in_data                   => acc_in_data,
       in_last                   => seq_out_last,

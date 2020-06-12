@@ -139,7 +139,7 @@ package ParallelPatterns_pkg is
   end component;
   
   component StreamAccumulator is
-    generic (
+   generic (
     
     -- Width of the stream data vector.
     DATA_WIDTH                  : natural
@@ -152,12 +152,16 @@ package ParallelPatterns_pkg is
 
     -- Active-high synchronous reset.
     reset                       : in  std_logic;
+    
+    -- Init value
+    -- Loaded at reset and on 'last'.
+    init_value                  : in std_logic_vector(DATA_WIDTH-1 downto 0);
 
     -- Input stream.
     in_valid                    : in  std_logic;
     in_ready                    : out std_logic;
     in_data                     : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-    in_last                     : in std_logic;
+    in_last                     : in  std_logic;
 
     -- Output stream.
     out_valid                   : out std_logic;
@@ -188,6 +192,9 @@ package ParallelPatterns_pkg is
 
     -- Active-high synchronous reset.
     reset                       : in  std_logic;
+    
+    -- Init value for the accumulator.
+    acc_init_value              : in std_logic_vector(DATA_WIDTH-1 downto 0);
 
     -- Input stream.
     in_valid                    : in  std_logic;

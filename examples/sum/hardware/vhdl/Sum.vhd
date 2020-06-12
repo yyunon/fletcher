@@ -85,7 +85,6 @@ sum_kernel: Sum_ExampleBatch_Reduce
       in_data                   => ExampleBatch_number,
       out_valid                 => sum_out_valid,
       out_ready                 => sum_out_ready,
-      out_last                  => sum_out_last,
       out_data                  => sum_out_data
     );
 
