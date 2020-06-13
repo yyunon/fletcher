@@ -218,5 +218,58 @@ package ParallelPatterns_pkg is
     out_last                    : out std_logic_vector(IN_DIMENSIONALITY-2 downto 0)
   );
   end component;
+  
+  component MapStream is
+  generic (
+    
+    -- Width of the stream data vector.
+    IN_DIMENSIONALITY           : natural := 1;
+    
+    -- In count width.
+    IN_COUNT_WIDTH              : natural := 1;
+    
+    -- Bitwidth of the sequence counter.
+    LENGTH_WIDTH                : natural := 8;
+    
+    -- Sequence length buffer depth.
+    LENGTH_BUFFER_DEPTH         : natural := 8
+
+  );
+  port (
+
+    -- Rising-edge sensitive clock.
+    clk                          : in  std_logic;
+
+    -- Active-high synchronous reset.
+    reset                        : in  std_logic;
+    
+
+    -- Input stream.
+    in_valid                     : in  std_logic;
+    in_ready                     : out std_logic;
+    in_dvalid                    : in  std_logic;
+    in_count                     : in  std_logic_vector(IN_COUNT_WIDTH-1 downto 0) := std_logic_vector(to_unsigned(1, IN_COUNT_WIDTH));
+    in_last                      : in  std_logic_vector(IN_DIMENSIONALITY-1 downto 0);
+    
+    -- Stream to kernel
+    krnl_out_valid               : out std_logic;
+    krnl_out_ready               : in  std_logic;
+    krnl_out_dvalid              : out std_logic;
+    krnl_out_count               : out std_logic_vector(IN_COUNT_WIDTH-1 downto 0) := std_logic_vector(to_unsigned(1, IN_COUNT_WIDTH));
+    
+    -- Stream from kernel
+    krnl_in_valid                : in  std_logic;
+    krnl_in_ready                : out std_logic;
+    krnl_in_dvalid               : in  std_logic;
+    krnl_in_count                : in  std_logic_vector(IN_COUNT_WIDTH-1 downto 0) := std_logic_vector(to_unsigned(1, IN_COUNT_WIDTH));
+
+    -- Output stream.
+    out_valid                    : out std_logic;
+    out_ready                    : in  std_logic;
+    out_dvalid                   : out std_logic;
+    out_count                    : out std_logic_vector(IN_COUNT_WIDTH-1 downto 0) := std_logic_vector(to_unsigned(1, IN_COUNT_WIDTH));
+    out_last                     : out std_logic_vector(IN_DIMENSIONALITY-1 downto 0)
+  );
+  end component;
 
 end ParallelPatterns_pkg;

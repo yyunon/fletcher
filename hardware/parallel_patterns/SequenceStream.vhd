@@ -78,7 +78,7 @@ architecture Behavioral of SequenceStream is
   signal remaining              : signed(LENGTH_WIDTH downto 0);
   signal remaining_next         : signed(LENGTH_WIDTH downto 0);
   
-  -- Length buffer ourpur stream.
+  -- Length buffer ourput stream.
   signal b_valid                : std_logic;
   signal b_ready                : std_logic;
   signal b_data                 : std_logic_vector(LENGTH_WIDTH-1 downto 0);
@@ -109,13 +109,15 @@ length_buffer: StreamBuffer
     );
     
 comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, b_data, remaining) is
-    variable diff : signed(LENGTH_WIDTH downto 0);
-    variable last : std_logic;
+    variable diff        : signed(LENGTH_WIDTH downto 0);
+    variable last        : std_logic;
   begin
     -- We're ready for new data on the input if the output is ready.
       in_ready_s <= out_ready;
       out_last_s <= '0';
       out_valid_s <= in_valid;
+      
+      
       
       --If the module is operating in blocking mode, block the
       --input while waiting for a new length value
@@ -123,8 +125,8 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
       if BLOCKING and b_ready = '1' then
         in_ready_s <= '0';
       end if;
-       
-      diff := signed(remaining) - signed(in_count);
+      
+      diff := signed(remaining) - signed('0' & in_count);
           
       --Last is asserted if we reached the end of the sequence.    
       if diff = 0 and in_dvalid = '1' then
@@ -147,17 +149,20 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
   end process;
     
   reg_proc: process (clk) is
+      variable remaining_var        : signed(LENGTH_WIDTH downto 0);
     begin
       if rising_edge(clk) then
+      
+        remaining_var := remaining;
         
         -- If a new input value is being handshaked, the current count is saved.
         if in_valid = '1' and in_ready_s = '1' then
-          remaining <= remaining_next;
+          remaining_var := remaining_next;
         end if;
           
         -- If a new length value is being handsaked, the count is adjusted.
         if b_ready = '1' and b_valid = '1' then
-          remaining <= remaining + signed(b_data);
+          remaining_var := remaining_var + signed(b_data);
           b_ready <= '0';
         end if;
           
@@ -168,6 +173,8 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
         if remaining_next <= 0 then 
           b_ready <= '1';
         end if;
+        
+        remaining <= remaining_var;
           
         if reset = '1' then
           remaining <= to_signed(0, LENGTH_WIDTH+1);
