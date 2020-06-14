@@ -109,8 +109,10 @@ begin
 
   BatchOut_vectors_last <= last_out;
 
+  result <= (others => '0');
+
   combinatorial_proc : process (state, start, reset, last_out, BatchIn_firstIdx, BatchIn_lastIdx, BatchIn_vectors_unl_valid,
-                               BatchOut_vectors_unl_valid, BatchIn_vectors_cmd_ready, BatchOut_vectors_cmd_ready) is 
+                               BatchOut_vectors_unl_valid, BatchIn_vectors_cmd_ready, BatchOut_vectors_cmd_ready, BatchOut_firstIdx, BatchOut_lastIdx) is 
   begin
     
     -- We first determine the default outputs of our combinatorial circuit.
@@ -129,6 +131,8 @@ begin
     BatchOut_vectors_cmd_tag      <= (others => '0');
     
     BatchIn_vectors_unl_ready <= '0'; -- Do not accept "unlocks".
+    BatchOut_vectors_unl_ready <= '0'; -- Do not accept "unlocks".
+    
     state_next <= state;                  -- Retain current state.
 
     -- For every state, we will determine the outputs of our combinatorial 
@@ -175,8 +179,8 @@ begin
         BatchIn_vectors_cmd_tag      <= (others => '0');
         
         Batchout_vectors_cmd_valid    <= '1';
-        BatchOut_vectors_cmd_firstIdx <= BatchIn_firstIdx;
-        BatchOut_vectors_cmd_lastIdx  <= BatchIn_lastIdx;
+        BatchOut_vectors_cmd_firstIdx <= BatchOut_firstIdx;
+        BatchOut_vectors_cmd_lastIdx  <= BatchOut_lastIdx;
         BatchOut_vectors_cmd_tag      <= (others => '0');
         
         if BatchIn_vectors_cmd_ready = '1' and BatchOut_vectors_cmd_ready = '1' then

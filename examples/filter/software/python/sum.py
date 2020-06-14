@@ -36,7 +36,6 @@ if __name__ == "__main__":
     context.enable()                                 # Enable the Context, (potentially transferring the data to FPGA).
 
     kernel = pf.Kernel(context)                      # Set up an interface to the Kernel, supplying the Context.
-    kernel.set_range(0,0,9)
     kernel.start()                                   # Start the kernel.
     kernel.wait_for_finish()                         # Wait for the kernel to finish.
 
