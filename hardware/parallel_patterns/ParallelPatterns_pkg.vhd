@@ -274,5 +274,24 @@ package ParallelPatterns_pkg is
     out_last                     : out std_logic_vector(IN_DIMENSIONALITY-1 downto 0)
   );
   end component;
+  
+  component DropEmpty is
+  generic (
+    INDEX_WIDTH : integer := 32;
+    TAG_WIDTH   : integer := 1
+  );
+  port (
+    clk                          : in  std_logic;
+    reset                        : in  std_logic;
+    
+    in_valid                     : in  std_logic;
+    in_dvalid                    : in  std_logic;
+    in_ready                     : out std_logic;
+    
+    out_valid                    : out std_logic;
+    out_ready                    : in  std_logic
+    
+  );
+  end component;
 
 end ParallelPatterns_pkg;

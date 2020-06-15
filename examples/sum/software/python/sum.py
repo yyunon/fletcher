@@ -28,7 +28,7 @@ if __name__ == "__main__":
     reader = pa.RecordBatchFileReader(args.recordbatch_path)
     batch = reader.get_batch(0)
 
-    platform = pf.Platform()                         # Create an interface to an auto-detected FPGA Platform.
+    platform = pf.Platform("snap")                         # Create an interface to an auto-detected FPGA Platform.
     platform.init()                                  # Initialize the Platform.
 
     context = pf.Context(platform)                   # Create a Context for our data on the Platform.
@@ -39,5 +39,5 @@ if __name__ == "__main__":
     kernel.start()                                   # Start the kernel.
     kernel.wait_for_finish()                         # Wait for the kernel to finish.
 
-    result = kernel.get_return(np.dtype(np.uint32))  # Obtain the result.
+    result = kernel.get_return(np.dtype(np.int32))  # Obtain the result.
     print("Sum: " + str(result))                     # Print the result.

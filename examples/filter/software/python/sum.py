@@ -19,6 +19,8 @@ import timeit
 import sys
 import argparse
 
+import time
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("recordbatch_path")
@@ -39,5 +41,7 @@ if __name__ == "__main__":
     kernel.start()                                   # Start the kernel.
     kernel.wait_for_finish()                         # Wait for the kernel to finish.
 
-    result = kernel.get_return(np.dtype(np.uint32))  # Obtain the result.
-    print("Sum: " + str(result))                     # Print the result.
+    #time.sleep(1)
+
+    result = kernel.get_return(np.dtype(np.int32))  # Obtain the result.
+    print("Result: " + str(result))                     # Print the result.

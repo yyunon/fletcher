@@ -80,7 +80,7 @@ begin
   sum_kernel: Sum_ExampleBatch_Reduce
     port map (
       clk                       => kcd_clk,
-      reset                     => reset,
+      reset                     => kcd_reset,
       in_valid                  => ExampleBatch_number_valid,
       in_ready                  => ExampleBatch_number_ready,
       in_last                   => ExampleBatch_number_last,
@@ -98,7 +98,7 @@ begin
   -- Combinatorial part:
   combinatorial_proc : process (ExampleBatch_firstIdx, 
 ExampleBatch_lastIdx, state, start, reset, ExampleBatch_number_cmd_ready, 
-ExampleBatch_number_unl_valid, sum_out_valid) is 
+ExampleBatch_number_unl_valid, sum_out_valid, kcd_reset) is 
   begin
     
     -- We first determine the default outputs of our combinatorial circuit.

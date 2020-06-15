@@ -100,7 +100,9 @@ int main(int argc, char **argv) {
   }
 
   // Wait for the kernel to finish.
-  status = kernel.WaitForFinish();
+  //status = kernel.WaitForFinish();
+
+  std::cin.ignore();
 
   if (!status.ok()) {
     std::cerr << "Something went wrong waiting for the kernel to finish." << std::endl;
@@ -119,6 +121,8 @@ int main(int argc, char **argv) {
 
   // Print the return value.
   std::cout << *reinterpret_cast<int32_t*>(&return_value_0) << std::endl;
+
+
 
   return 0;
 }
