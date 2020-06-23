@@ -63,118 +63,64 @@ architecture Behavioral of FilterStream is
    signal in_transation_counter         : unsigned(INDEX_WIDTH-1 downto 0);
    signal in_transation_counter_next    : unsigned(INDEX_WIDTH-1 downto 0);
    
-   signal hit_b_in_data                : std_logic_vector(LANE_COUNT + INDEX_WIDTH-1 downto 0);
-   signal hit_b_in_ready               : std_logic;
-   signal hit_b_in_valid               : std_logic;
+   signal pred_b_in_data                : std_logic_vector(LANE_COUNT-1 downto 0);
+   signal pred_b_in_ready               : std_logic;
+   signal pred_b_in_valid               : std_logic;
    
-   signal hit_b_out_valid              : std_logic;
-   signal hit_b_out_ready              : std_logic;
-   signal hit_b_out_data               : std_logic_vector(LANE_COUNT + INDEX_WIDTH-1 downto 0);
+   signal pred_b_out_valid              : std_logic;
+   signal pred_b_out_ready              : std_logic;
+   signal pred_b_out_data               : std_logic_vector(LANE_COUNT-1 downto 0);
 begin
     
   -- Buffer to hold predicated as transation indexes  
-  hit_buffer: StreamBuffer
+  pred_buffer: StreamBuffer
     generic map (
       MIN_DEPTH                 => MIN_BUFFER_DEPTH,
-      DATA_WIDTH                => INDEX_WIDTH + LANE_COUNT
+      DATA_WIDTH                => LANE_COUNT
     )
     port map (
       clk                       => clk,
       reset                     => reset,
-      in_valid                  => hit_b_in_valid,
-      in_ready                  => hit_b_in_ready,
-      in_data                   => hit_b_in_data,
-      out_valid                 => hit_b_out_valid,
-      out_ready                 => hit_b_out_ready,
-      out_data                  => hit_b_out_data
+      in_valid                  => pred_b_in_valid,
+      in_ready                  => pred_b_in_ready,
+      in_data                   => pred_b_in_data,
+      out_valid                 => pred_b_out_valid,
+      out_ready                 => pred_b_out_ready,
+      out_data                  => pred_b_out_data
     );
     
-    --In the predicate buffer we store the index of the transaction that has
-    --data inside that needs passing through.
-    hit_b_in_data <= std_logic_vector(pred_in_data & std_logic_vector(pred_transation_counter_next));
-    pred_in_ready <= hit_b_in_ready;
+    pred_b_in_data <= pred_in_data;
+    pred_b_in_valid <= pred_in_valid;
+    pred_in_ready <= pred_b_in_ready;
     
     
-    comb_proc: process (out_ready, hit_b_out_valid, in_transation_counter, hit_b_out_data,
-                       pred_transation_counter, pred_in_valid, hit_b_in_ready, in_valid, in_ready_s,
+    comb_proc: process (out_ready, pred_b_out_valid, in_transation_counter, pred_b_out_data,
+                       pred_transation_counter, pred_in_valid, pred_b_in_ready, in_valid, in_ready_s,
                        in_last, pred_in_data) is
-        variable hit               : boolean;
-        variable current_index     : unsigned(INDEX_WIDTH-1 downto 0);
       begin
-        hit_b_in_valid <= '0';
-        hit_b_out_ready <= '0';
+        --pred_b_out_ready <= out_ready;
         out_valid <= '0';
-        out_strb <= hit_b_out_data(INDEX_WIDTH + LANE_COUNT - 1 downto INDEX_WIDTH);
+        out_strb <= (others => '0');
+        in_ready_s <= pred_b_out_valid and out_ready;
         
-        current_index := in_transation_counter + 1;
-        hit := current_index = unsigned(hit_b_out_data(INDEX_WIDTH-1 downto 0));
-        
-        in_ready_s <= out_ready;
-        
-        
-        -- Retain counters by default.
-        pred_transation_counter_next <= pred_transation_counter;
-        in_transation_counter_next <= in_transation_counter;
+       if in_valid = '1' then
+         if pred_b_out_valid = '1' then
+           out_valid <= or_reduce(pred_b_out_data);
+           out_strb <= pred_b_out_data;
+           if or_reduce(pred_b_out_data) = '0' then
+             in_ready_s <= '1';
+           end if;
+           if or_reduce(in_last) = '1' then
+              out_valid <= '1';
+              --in_ready_s <= '1';
+           end if;
+         end if;
          
-        
-       -- Increment the predicate transaction count on incoming predicates.
-        if pred_in_valid = '1' and hit_b_in_ready = '1' then
-         pred_transation_counter_next <= pred_transation_counter + 1;
-        end if;
-        
-        
-        if hit_b_out_valid = '1' then
-          if in_valid = '1' then
-            if hit then
-            -- If there is a hit, we validate the output and let out_ready through.
-             out_valid <= '1';
-             in_ready_s <= out_ready;
-             --hit_b_out_ready <= '1';
-            else
-             -- If there's no hit, the output is invalid, but still waiting for new transfers on the input.
-              out_valid <= '0';
-              in_ready_s <= '1';
-            end if;
-            
-            if in_ready_s = '1' then
-              -- Save the current transaction index on a handshake.
-              in_transation_counter_next <= current_index;
-              if or_reduce(in_last) = '1' and not hit then
-                -- If there's no hit, but this transaction closes the incoming sequence,
-                -- an empty transaction must be sent out to let the sink know.
-                out_valid <= '1';
-                out_strb <= (others => '0');
-                --Reset counters on 'lasts'
-                in_transation_counter_next <= to_unsigned(0, INDEX_WIDTH);
-                pred_transation_counter_next <= to_unsigned(0, INDEX_WIDTH);
-              end if;
-            end if;
-          end if;
-        end if;
-        
-        -- If the incoming transaction contains hit predicates, save it to the buffer.
-        if pred_in_valid = '1' and hit_b_in_ready = '1' and or_reduce(pred_in_data) = '1' then
-          hit_b_in_valid <= '1';
-        end if;
-        
-        -- With a handshake on the output stream, we handsake the buffer output as well to move to the next candidate.
-        if hit and out_ready <= '1' then
-          hit_b_out_ready <= '1';
-        end if;    
-      end process;
-       
-    reg_proc: process(clk) is
-      begin
-        if rising_edge(clk) then 
-        
-          -- Counter housekeeping
-          pred_transation_counter <= pred_transation_counter_next;
-          in_transation_counter   <= in_transation_counter_next;
-          if reset = '1' then
-            in_transation_counter <= to_unsigned(0, INDEX_WIDTH);
-            pred_transation_counter <= to_unsigned(0, INDEX_WIDTH);
-          end if;
-        end if;
+          -- With a handshake on the output stream, we handsake the buffer output as well to move to the next candidate.
+         if in_ready_s = '1'then
+           pred_b_out_ready <= '1';
+         end if;
+       end if;
     end process;
     
     in_ready <= in_ready_s;

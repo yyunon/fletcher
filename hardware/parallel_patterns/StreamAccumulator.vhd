@@ -50,6 +50,7 @@ entity StreamAccumulator is
     in_ready                    : out std_logic;
     in_data                     : in  std_logic_vector(DATA_WIDTH-1 downto 0);
     in_last                     : in  std_logic;
+    in_dvalid                   : in  std_logic := '1';
 
     -- Output stream.
     out_valid                   : out std_logic;
@@ -82,7 +83,7 @@ reg_proc: process (clk) is
     
       out_valid <= '1';--initialized;
       
-      if in_valid = '1' then
+      if in_valid = '1' and in_dvalid = '1' then
         data <= in_data;
         initialized <= '1';
         saved_last <= '0';

@@ -4,9 +4,12 @@ import pyarrow as pa
 number_field = pa.field('number', pa.int64(), nullable=False)
 predicate_field = pa.field('string', pa.utf8(), nullable=False)
 
-field_metadata = {b'fletcher_epc' : b'8'}
+field_metadata = {b'fletcher_epc' : b'20'}
+
+#number_field_metadata = {b'fletcher_epc' : b'16'}
 
 predicate_field = predicate_field.add_metadata(field_metadata)
+#number_field = number_field.add_metadata(number_field_metadata)
 
 # Create a list of fields for pa.schema()
 schema_fields = [predicate_field, number_field]
@@ -24,7 +27,20 @@ schema = schema.add_metadata(metadata)
 
 # Create a list of PyArrow Arrays. Every Array can be seen 
 # as a 'Column' of the RecordBatch we will create.
-data = [pa.array(["covfefe", "Lol", "Yolo", "covfefe", "Hello", "covfefe"]), pa.array([11, -3, 3, -17, 5, 4])]
+data = [pa.array(["Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]), pa.array([11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 
+	11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11])]
+
+#data = [pa.array(["Blue Ribbon Taxi Association Inc.", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAA"]), pa.array([7, 11, -3])]
 
 # Create a RecordBatch from the Arrays.
 recordbatch = pa.RecordBatch.from_arrays(data, schema)
@@ -37,3 +53,4 @@ writer.write(recordbatch)
 
 # Close the writer.
 writer.close()
+

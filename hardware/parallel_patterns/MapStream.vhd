@@ -117,9 +117,9 @@ begin
 
   element_counter: StreamElementCounter
     generic map (
-      IN_COUNT_MAX              => IN_COUNT_WIDTH**2,
+      IN_COUNT_MAX              => IN_COUNT_WIDTH**2-1,
       IN_COUNT_WIDTH            => IN_COUNT_WIDTH,
-      OUT_COUNT_MAX             => LENGTH_WIDTH**2,
+      OUT_COUNT_MAX             => LENGTH_WIDTH**2-1,
       OUT_COUNT_WIDTH           => LENGTH_WIDTH
     )
     port map (
@@ -127,7 +127,7 @@ begin
       reset                     => reset,
       in_valid                  => counter_valid,
       in_ready                  => counter_ready,
-      in_dvalid                 => in_dvalid,
+      in_dvalid                 => '1',
       in_count                  => in_count,
       in_last                   => in_last(0),
       out_valid                 => count_valid,

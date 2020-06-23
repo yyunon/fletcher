@@ -141,6 +141,7 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
         remaining_var := diff;
       end if;
       
+      -- If a new length value is being handshaked, the count is adjusted.
       if b_ready = '1' and b_valid = '1' then
         remaining_var := remaining_var + signed(b_data);
       end if;
@@ -158,7 +159,7 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
     begin
       if rising_edge(clk) then
           
-        -- If a new length value is being handsaked, the count is adjusted.
+        
         if b_ready = '1' and b_valid = '1' then
           b_ready <= '0';
         end if;
@@ -166,7 +167,7 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
         -- Length buffer ready should be zero by default, only querying a value when it's necessary.
         b_ready <= '0';
           
-        -- When the current sequency is fullfilled, a new length value is requested.
+        -- When the current sequency is fulfilled, a new length value is requested.
         if remaining_next <= 0 then 
           b_ready <= '1';
         end if;

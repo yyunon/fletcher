@@ -165,6 +165,7 @@ package ParallelPatterns_pkg is
     in_ready                    : out std_logic;
     in_data                     : in  std_logic_vector(DATA_WIDTH-1 downto 0);
     in_last                     : in  std_logic;
+    in_dvalid                   : in  std_logic := '1';
 
     -- Output stream.
     out_valid                   : out std_logic;
@@ -208,6 +209,7 @@ package ParallelPatterns_pkg is
     acc_out_valid               : out  std_logic;
     acc_out_ready               : in   std_logic;
     acc_out_data                : out  std_logic_vector(DATA_WIDTH-1 downto 0);
+    acc_in_dvalid               : in   std_logic := '1';
     
     -- Accumulator input stream.
     acc_in_valid                : in  std_logic;

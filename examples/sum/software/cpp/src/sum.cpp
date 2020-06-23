@@ -91,6 +91,14 @@ int main(int argc, char **argv) {
   // Create a kernel based on the context.
   fletcher::Kernel kernel(context);
 
+  // Reset the kernel
+  status = kernel.Reset();
+
+  if (!status.ok()) {
+    std::cerr << "Could not reset the kernel." << std::endl;
+    return -1;
+  }
+
   // Start the kernel.
   status = kernel.Start();
 

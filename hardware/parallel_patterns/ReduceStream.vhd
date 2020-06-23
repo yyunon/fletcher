@@ -46,6 +46,7 @@ entity ReduceStream is
     acc_in_valid                : in  std_logic;
     acc_in_ready                : out std_logic;
     acc_in_data                 : in  std_logic_vector(DATA_WIDTH-1 downto 0);
+    acc_in_dvalid               : in  std_logic := '1';
 
     -- Output stream.
     out_valid                   : out std_logic;
@@ -75,6 +76,8 @@ architecture Behavioral of ReduceStream is
   --
   signal out_s_ready                : std_logic;
   signal out_s_valid                : std_logic;
+  
+  signal acc_out_data_s             : std_logic_vector(DATA_WIDTH-1 downto 0);
 
 begin
 
@@ -133,13 +136,14 @@ element_counter: StreamElementCounter
       clk                       => clk,
       reset                     => reset,
       in_valid                  => acc_s_in_valid,
+      in_dvalid                 => acc_in_dvalid,
       init_value                => acc_init_value,
       in_ready                  => acc_s_in_ready,
       in_data                   => acc_in_data,
       in_last                   => seq_out_last,
       out_valid                 => acc_out_valid,
       out_ready                 => acc_out_ready,
-      out_data                  => acc_out_data
+      out_data                  => acc_out_data_s
     );
  
  
@@ -172,10 +176,18 @@ element_counter: StreamElementCounter
   
   out_s_ready <= out_ready;
   
-  -- Output data is the accumulator input.
-  out_data  <= acc_in_data;
+  out_data_proc: process(acc_in_data, acc_out_data_s, acc_in_dvalid) is
+  begin
+    if acc_in_dvalid = '1' then
+      out_data <= acc_in_data;
+    else
+      out_data <= acc_out_data_s;
+    end if;
+  end process;
   
   -- Outpus last signals are the same in the unaffected dimensions.
   out_last  <= in_last(IN_DIMENSIONALITY-1 downto 1);
+  
+  acc_out_data <= acc_out_data_s;
   
 end Behavioral;

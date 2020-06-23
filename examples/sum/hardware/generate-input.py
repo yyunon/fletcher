@@ -19,7 +19,7 @@ schema = schema.add_metadata(metadata)
 
 # Create a list of PyArrow Arrays. Every Array can be seen 
 # as a 'Column' of the RecordBatch we will create.
-data = [pa.array([1, -3, 3, -7])]
+data = [pa.array([1, -3, 3, -7, 1, -3, 3, -5, 1, -3, 3, -7, 1, -3, 3, -5, -8])]
 
 # Create a RecordBatch from the Arrays.
 recordbatch = pa.RecordBatch.from_arrays(data, schema)
