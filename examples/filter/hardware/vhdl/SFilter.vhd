@@ -156,12 +156,12 @@ PORT (
 	probe5 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe6 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe7 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
-	probe8 : IN STD_LOGIC_VECTOR(159 DOWNTO 0); 
+	probe8 : IN STD_LOGIC_VECTOR(7 DOWNTO 0); 
 	probe9 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe10 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe11 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe12 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
-	probe13 : IN STD_LOGIC_VECTOR(63 DOWNTO 0); 
+	probe13 : IN STD_LOGIC_VECTOR(7 DOWNTO 0); 
 	probe14 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe15 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe16 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
@@ -175,7 +175,7 @@ PORT (
 	probe24 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe25 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe26 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
-	probe27 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
+	probe27 : IN STD_LOGIC_VECTOR(7 DOWNTO 0); 
 	probe28 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe29 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe30 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
@@ -184,9 +184,9 @@ PORT (
 	probe33 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe34 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
 	probe35 : IN STD_LOGIC_VECTOR(0 DOWNTO 0); 
-	probe36 : IN STD_LOGIC_VECTOR(63 DOWNTO 0); 
-	probe37 : IN STD_LOGIC_VECTOR(31 DOWNTO 0); 
-	probe38 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+	probe36 : IN STD_LOGIC_VECTOR(7 DOWNTO 0); 
+	probe37 : IN STD_LOGIC_VECTOR(7 DOWNTO 0); 
+	probe38 : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
 	probe39 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
 );
 END COMPONENT;
@@ -398,13 +398,13 @@ begin
         probe4(0) => ExampleBatch_string_chars_valid, 
         probe5(0) => ExampleBatch_string_chars_ready_s, 
         probe6(0) => ExampleBatch_string_chars_dvalid, 
-        probe7(0) => ExampleBatch_string_chars_last, 
-        probe8 => ExampleBatch_string_chars, 
+        probe7(0) => ExampleBatch_string_chars_last,
+        probe8 => ExampleBatch_string_chars(7 downto 0),
         probe9(0) => ExampleBatch_number_valid, 
         probe10(0) => ExampleBatch_number_ready_s, 
         probe11(0) => ExampleBatch_number_dvalid, 
         probe12(0) => ExampleBatch_number_last, 
-        probe13 => ExampleBatch_number, 
+        probe13 => ExampleBatch_number(7 downto 0), 
         probe14(0) => ExampleBatch_string_unl_valid, 
         probe15(0) => ExampleBatch_string_unl_ready_s, 
         probe16(0) => ExampleBatch_number_unl_valid, 
@@ -418,7 +418,7 @@ begin
         probe24(0) => reset, 
         probe25(0) => idle_s, 
         probe26(0) => busy_s, 
-        probe27 => result_s(31 downto 0), 
+        probe27 => result_s(7 downto 0), 
         probe28(0) => matcher_out_valid, 
         probe29(0) => matcher_out_ready, 
         probe30(0) => matcher_out_match, 
@@ -427,9 +427,9 @@ begin
         probe33(0) => filter_out_strb, 
         probe34(0) => sum_out_valid, 
         probe35(0) => sum_out_ready, 
-        probe36 => sum_out_data, 
-        probe37 => ExampleBatch_firstidx, 
-        probe38 => ExampleBatch_lastidx,
+        probe36 => sum_out_data(7 downto 0), 
+        probe37 => ExampleBatch_firstidx(7 downto 0), 
+        probe38 => ExampleBatch_lastidx(7 downto 0),
         probe39(0) => done_s
     );
     
@@ -575,7 +575,7 @@ begin
         result_s <= sum_out_data;
       end if;
 
-      if kcd_reset = '1' then
+      if kcd_reset = '1' or reset = '1' then
         state <= STATE_IDLE;
         result_s <= (others => '0');
       end if;
