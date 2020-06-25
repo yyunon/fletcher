@@ -8,11 +8,11 @@ open-source tools.
 ### For hardware generation (step 1 - 3):
 The examples in this part of the tutorial are written in Python, so you'll need
 * Install [Python 3.6+](https://www.python.org/).
-* Install [PyArrow 0.15.1+](https://arrow.apache.org/docs/python/).
+* Install [PyArrow 0.17.0+](https://arrow.apache.org/docs/python/).
 
 Furthermore you'll need to build and install Fletchgen - the Fletcher design
 generator tool.
-* Build and install [Fletchgen](../../codegen/fletchgen/README.md).
+* Build and install [Fletchgen](../../codegen/cpp/fletchgen/README.md).
 
 Also, we make use of vhdmmio - A code generator for AXI4-lite compatible
 memory-mapped I/O.
