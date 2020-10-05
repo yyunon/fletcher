@@ -98,7 +98,6 @@ begin
                        pred_transation_counter, pred_in_valid, pred_b_in_ready, in_valid, in_ready_s,
                        in_last, pred_in_data) is
       begin
-        --pred_b_out_ready <= out_ready;
         out_valid <= '0';
         out_strb <= (others => '0');
         in_ready_s <= pred_b_out_valid and out_ready;
@@ -112,7 +111,6 @@ begin
            end if;
            if or_reduce(in_last) = '1' then
               out_valid <= '1';
-              --in_ready_s <= '1';
            end if;
          end if;
          

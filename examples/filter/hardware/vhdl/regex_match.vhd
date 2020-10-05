@@ -105,7 +105,7 @@ entity regex_match is
 
     -- Outgoing match stream for one-string-per-cycle systems. match indicates
     -- which of the following regexs matched:
-    --  - 0: /Blue Ribbon Taxi Association Inc\./
+    --  - 0: /[Bb].*/
     -- error indicates that a UTF-8 decoding error occured. Only the following
     -- decode errors are detected:
     --  - multi-byte sequence interrupted by last flag or a new sequence
@@ -567,25 +567,8 @@ architecture Behavioral of regex_match is
     -- Code point subrange stream. Each flag signal represents one contiguous
     -- range of code points that does not cross a 64-CP boundary.
     valid                       : std_logic;
-      b00000f40t40              : std_logic; --  
-      b00000f56t56              : std_logic; -- \.
-      b00001f01t01              : std_logic; -- A
       b00001f02t02              : std_logic; -- B
-      b00001f11t11              : std_logic; -- I
-      b00001f22t22              : std_logic; -- R
-      b00001f24t24              : std_logic; -- T
-      b00001f41t41              : std_logic; -- a
       b00001f42t42              : std_logic; -- b
-      b00001f43t43              : std_logic; -- c
-      b00001f45t45              : std_logic; -- e
-      b00001f51t51              : std_logic; -- i
-      b00001f54t54              : std_logic; -- l
-      b00001f56t56              : std_logic; -- n
-      b00001f57t57              : std_logic; -- o
-      b00001f63t63              : std_logic; -- s
-      b00001f64t64              : std_logic; -- t
-      b00001f65t65              : std_logic; -- u
-      b00001f70t70              : std_logic; -- x
 
     -- Copy of s23.last/error.
     last                        : std_logic;
@@ -613,50 +596,16 @@ architecture Behavioral of regex_match is
 
     -- Pass through control signals and decode range signals.
     o.valid         := i.valid;
-    o.b00000f40t40  := i.oh3( 0) and i.oh2( 0) and i.oh1( 0) and i.th0(31) and not i.th0(32); --  
-    o.b00000f56t56  := i.oh3( 0) and i.oh2( 0) and i.oh1( 0) and i.th0(45) and not i.th0(46); -- \.
-    o.b00001f01t01  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0( 0) and not i.th0( 1); -- A
     o.b00001f02t02  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0( 1) and not i.th0( 2); -- B
-    o.b00001f11t11  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0( 8) and not i.th0( 9); -- I
-    o.b00001f22t22  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(17) and not i.th0(18); -- R
-    o.b00001f24t24  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(19) and not i.th0(20); -- T
-    o.b00001f41t41  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(32) and not i.th0(33); -- a
     o.b00001f42t42  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(33) and not i.th0(34); -- b
-    o.b00001f43t43  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(34) and not i.th0(35); -- c
-    o.b00001f45t45  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(36) and not i.th0(37); -- e
-    o.b00001f51t51  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(40) and not i.th0(41); -- i
-    o.b00001f54t54  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(43) and not i.th0(44); -- l
-    o.b00001f56t56  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(45) and not i.th0(46); -- n
-    o.b00001f57t57  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(46) and not i.th0(47); -- o
-    o.b00001f63t63  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(50) and not i.th0(51); -- s
-    o.b00001f64t64  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(51) and not i.th0(52); -- t
-    o.b00001f65t65  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(52) and not i.th0(53); -- u
-    o.b00001f70t70  := i.oh3( 0) and i.oh2( 0) and i.oh1( 1) and i.th0(55) and not i.th0(56); -- x
     o.last          := i.last;
     o.error         := i.error;
 
     -- In simulation, make signals undefined when their value is meaningless.
     -- pragma translate_off
     if to_X01(o.valid) /= '1' then
-      o.b00000f40t40 := 'U';
-      o.b00000f56t56 := 'U';
-      o.b00001f01t01 := 'U';
       o.b00001f02t02 := 'U';
-      o.b00001f11t11 := 'U';
-      o.b00001f22t22 := 'U';
-      o.b00001f24t24 := 'U';
-      o.b00001f41t41 := 'U';
       o.b00001f42t42 := 'U';
-      o.b00001f43t43 := 'U';
-      o.b00001f45t45 := 'U';
-      o.b00001f51t51 := 'U';
-      o.b00001f54t54 := 'U';
-      o.b00001f56t56 := 'U';
-      o.b00001f57t57 := 'U';
-      o.b00001f63t63 := 'U';
-      o.b00001f64t64 := 'U';
-      o.b00001f65t65 := 'U';
-      o.b00001f70t70 := 'U';
     end if;
     if to_X01(o.last) /= '1' then
       o.error := INVALID;
@@ -673,7 +622,7 @@ architecture Behavioral of regex_match is
     -- Code point range stream. Each flag signal represents a set of code
     -- points as used by a transition in the NFAEs.
     valid                       : std_logic;
-      match                     : std_logic_vector(18 downto 0);
+      match                     : std_logic_vector(0 downto 0);
 
     -- Copy of s23.last/error.
     last                        : std_logic;
@@ -700,25 +649,7 @@ architecture Behavioral of regex_match is
 
     -- Pass through control signals and decode range signals by default.
     o.valid       := i.valid;
-    o.match(  0)  := i.b00001f01t01; -- A
-    o.match(  1)  := i.b00000f56t56; -- \.
-    o.match(  2)  := i.b00001f54t54; -- l
-    o.match(  3)  := i.b00000f40t40; --  
-    o.match(  4)  := i.b00001f57t57; -- o
-    o.match(  5)  := i.b00001f43t43; -- c
-    o.match(  6)  := i.b00001f70t70; -- x
-    o.match(  7)  := i.b00001f41t41; -- a
-    o.match(  8)  := i.b00001f22t22; -- R
-    o.match(  9)  := i.b00001f64t64; -- t
-    o.match( 10)  := i.b00001f63t63; -- s
-    o.match( 11)  := i.b00001f56t56; -- n
-    o.match( 12)  := i.b00001f45t45; -- e
-    o.match( 13)  := i.b00001f51t51; -- i
-    o.match( 14)  := i.b00001f42t42; -- b
-    o.match( 15)  := i.b00001f02t02; -- B
-    o.match( 16)  := i.b00001f65t65; -- u
-    o.match( 17)  := i.b00001f24t24; -- T
-    o.match( 18)  := i.b00001f11t11; -- I
+    o.match(  0)  := i.b00001f02t02 or i.b00001f42t42; -- [Bb]
     o.last        := i.last;
     o.error       := i.error;
 
@@ -739,11 +670,11 @@ architecture Behavioral of regex_match is
   ------------------------------------------------------------------------------
   -- There is one bit for every NFAE state, which indicates whether the NFAE
   -- can be in that state.
-  subtype s5s_type is std_logic_vector(33 downto 0);
+  subtype s5s_type is std_logic_vector(1 downto 0);
 
   type s5s_array is array (natural range <>) of s5s_type;
 
-  constant S5S_RESET            : s5s_type := "0000000000000000000000000000010000";
+  constant S5S_RESET            : s5s_type := "01";
 
   ------------------------------------------------------------------------------
   -- Stage 5 output record
@@ -786,40 +717,9 @@ architecture Behavioral of regex_match is
     -- Transition to the next state if there is an incoming character.
     if i.valid = '1' then
       si := s;
-      s(  0) := (si(  3) and i.match(  0));
-      s(  1) := (si( 12) and i.match(  1));
-      s(  2) := (si( 21) and i.match(  2));
-      s(  3) := (si( 29) and i.match(  3));
-      s(  4) := '0';
-      s(  5) := (si( 15) and i.match(  4));
-      s(  6) := (si(  5) and i.match(  5));
-      s(  7) := (si( 26) and i.match(  3));
-      s(  8) := (si(  9) and i.match(  6));
-      s(  9) := (si( 31) and i.match(  7));
-      s( 10) := (si( 11) and i.match(  8));
-      s( 11) := (si( 17) and i.match(  3));
-      s( 12) := (si( 22) and i.match(  5));
-      s( 13) := (si( 23) and i.match(  4));
-      s( 14) := (si( 25) and i.match(  9));
-      s( 15) := (si( 27) and i.match( 10));
-      s( 16) := (si( 19) and i.match( 11));
-      s( 17) := (si( 28) and i.match( 12));
-      s( 18) := (si(  6) and i.match( 13));
-      s( 19) := (si( 20) and i.match(  4));
-      s( 20) := (si( 33) and i.match( 14));
-      s( 21) := (si(  4) and i.match( 15));
-      s( 22) := (si( 32) and i.match( 11));
-      s( 23) := (si( 14) and i.match( 13));
-      s( 24) := (si( 16) and i.match(  3));
-      s( 25) := (si( 18) and i.match(  7));
-      s( 26) := (si( 13) and i.match( 11));
-      s( 27) := (si(  0) and i.match( 10));
-      s( 28) := (si(  2) and i.match( 16));
-      s( 29) := (si(  8) and i.match( 13));
-      s( 30) := (si( 10) and i.match( 13));
-      s( 31) := (si( 24) and i.match( 17));
-      s( 32) := (si(  7) and i.match( 18));
-      s( 33) := (si( 30) and i.match( 14));
+      s(  0) := '0';
+      s(  1) := (si(  0) and i.match(  0))
+             or (si(  1) and '1');
     end if;
 
     -- Save whether the next state will be a final state to determine whether

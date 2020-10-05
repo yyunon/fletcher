@@ -27,7 +27,7 @@ schema = schema.add_metadata(metadata)
 
 # Create a list of PyArrow Arrays. Every Array can be seen 
 # as a 'Column' of the RecordBatch we will create.
-data = [pa.array(["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+data = [pa.array(["Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
 	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
 	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
 	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
@@ -35,9 +35,9 @@ data = [pa.array(["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Associati
 	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
 	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
 	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
-	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
-	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", 
-	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc."]), pa.array([11, -200, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 
+	"Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Ink.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 
+	"Blue Ribbon Taxi Association Ink.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Ink.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Ink.", 
+	"Blue Ribbon Taxi Association Ink.", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Blue Ribbon Taxi Association Ink."]), pa.array([11, -200, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 
 	11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11, -3, 11])]
 
 #data = [pa.array(["Blue Ribbon Taxi Association Inc.", "Blue Ribbon Taxi Association Inc.", "AAAAAAAAAAAAA"]), pa.array([7, 11, -3])]

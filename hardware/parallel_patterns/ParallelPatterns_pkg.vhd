@@ -219,8 +219,8 @@ package ParallelPatterns_pkg is
     -- Output stream.
     out_valid                   : out std_logic;
     out_ready                   : in  std_logic;
-    out_data                    : out std_logic_vector(DATA_WIDTH-1 downto 0);
-    out_last                    : out std_logic_vector(IN_DIMENSIONALITY-2 downto 0)
+    out_data                    : out std_logic_vector(DATA_WIDTH-1 downto 0)
+    --out_last                    : out std_logic_vector(IN_DIMENSIONALITY-2 downto 0)
   );
   end component;
   

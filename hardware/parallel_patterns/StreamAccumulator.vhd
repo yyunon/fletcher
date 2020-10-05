@@ -81,7 +81,7 @@ reg_proc: process (clk) is
   begin
     if rising_edge(clk) then
     
-      out_valid <= '1';--initialized;
+      out_valid <= initialized;
       
       if in_valid = '1' and in_dvalid = '1' then
         data <= in_data;
@@ -95,7 +95,7 @@ reg_proc: process (clk) is
       end if;
       
       if reset = '1' then
-        initialized <= '0';
+        initialized <= '1';
         saved_last  <= '0';
         data <= init_value;
       end if;

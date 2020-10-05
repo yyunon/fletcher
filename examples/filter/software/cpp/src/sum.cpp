@@ -5,6 +5,7 @@
 #include <memory>
 #include <iostream>
 #include <chrono>
+#include <fstream>
 
 
 /**
@@ -12,7 +13,7 @@
  */
 int main(int argc, char **argv) {
   // Check number of arguments.
-  if (argc != 2) {
+  if (argc < 2) {
     std::cerr << "Incorrect number of arguments. Usage: sum path/to/recordbatch.rb" << std::endl;
     return -1;
   }
@@ -22,6 +23,15 @@ int main(int argc, char **argv) {
 
   // Attempt to read the RecordBatch from the supplied argument.
   fletcher::ReadRecordBatchesFromFile(argv[1], &batches);
+
+  std::ofstream outfile;
+  
+  if (argc == 3) {
+  	std::cout << "Opening output CSV" << std::endl;
+    outfile.open (argv[2], std::ios_base::app | std::ios_base::out);
+  }
+  
+
 
   // RecordBatch should contain exactly one batch.
   if (batches.size() != 1) {
@@ -171,6 +181,22 @@ int main(int argc, char **argv) {
   std::cout << "Total runtime: \t\t" << t_total << "us" << std::endl;
 
 
+  if (argc == 3) {
+   outfile << argv[1] << ",";
+   outfile << t_platform_create << ",";
+   outfile << t_platform_init << ",";
+   outfile << t_context << ",";
+   outfile << t_rb << ",";
+   outfile << t_enable_ctx << ",";
+   outfile << t_create_krnl << ",";
+   outfile << t_reset_krnl << ",";
+   outfile << t_start_krnl << ",";
+   outfile << t_poll_krnl << ",";
+   outfile << t_get_return << ",";
+   outfile << t_total << std::endl;
+  }
+
+ outfile.close();
 
   return 0;
 }

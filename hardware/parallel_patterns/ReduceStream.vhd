@@ -51,8 +51,8 @@ entity ReduceStream is
     -- Output stream.
     out_valid                   : out std_logic;
     out_ready                   : in  std_logic;
-    out_data                    : out std_logic_vector(DATA_WIDTH-1 downto 0);
-    out_last                    : out std_logic_vector(IN_DIMENSIONALITY-2 downto 0)
+    out_data                    : out std_logic_vector(DATA_WIDTH-1 downto 0)
+    --out_last                    : out std_logic_vector(IN_DIMENSIONALITY-2 downto 0)
   );
 end ReduceStream;
 
@@ -86,7 +86,7 @@ element_counter: StreamElementCounter
     generic map (
       IN_COUNT_MAX              => 1,
       IN_COUNT_WIDTH            => 1,
-      OUT_COUNT_MAX             => LENGTH_WIDTH**2,
+      OUT_COUNT_MAX             => 2**LENGTH_WIDTH - 4,
       OUT_COUNT_WIDTH           => LENGTH_WIDTH
     )
     port map (
@@ -184,9 +184,6 @@ element_counter: StreamElementCounter
       out_data <= acc_out_data_s;
     end if;
   end process;
-  
-  -- Outpus last signals are the same in the unaffected dimensions.
-  out_last  <= in_last(IN_DIMENSIONALITY-1 downto 1);
   
   acc_out_data <= acc_out_data_s;
   

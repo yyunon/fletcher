@@ -120,14 +120,15 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
       
       remaining_var := remaining;
       
+      
+      diff := signed(remaining) - signed('0' & in_count);      
+      
       --If the module is operating in blocking mode, block the
       --input while waiting for a new length value
       
-      if BLOCKING and b_ready = '1' then
+      if BLOCKING and diff < 0 then
         in_ready_s <= '0';
       end if;
-      
-      diff := signed(remaining) - signed('0' & in_count);      
           
       --Last is asserted if we reached the end of the sequence.    
       if diff = 0 and in_dvalid = '1' then
@@ -143,7 +144,7 @@ comb_proc: process (in_valid, out_ready, in_count, in_dvalid, b_valid, b_ready, 
       
       -- If a new length value is being handshaked, the count is adjusted.
       if b_ready = '1' and b_valid = '1' then
-        remaining_var := remaining_var + signed(b_data);
+        remaining_var := remaining_var + signed('0' & b_data);
       end if;
       
       if in_valid = '1' then

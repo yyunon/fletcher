@@ -72,3 +72,5 @@ transcript
 
 .DS_Store
 .vscode/ipch
+
+*.rb
