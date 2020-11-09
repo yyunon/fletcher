@@ -14,7 +14,7 @@ entity FilterStream is
   generic (
     
     -- Width of the stream data vector.
-    LANE_COUNT                  : natural := 1;
+    LANE_COUNT                  : natural := 21;
     
     -- Width of the transaction index.
     INDEX_WIDTH                 : natural;
@@ -134,6 +134,6 @@ begin
     end process;
     
     in_ready <= in_ready_s;
-    out_last <= in_last;
+    out_last(0) <= in_last(0);
   
 end Behavioral;
