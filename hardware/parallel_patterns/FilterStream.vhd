@@ -1,3 +1,6 @@
+-- This source code is initialized by Akos Ahadgany.
+-- rev 0.1 
+-- Author: Akos Ahadgany 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -70,6 +73,8 @@ architecture Behavioral of FilterStream is
    signal pred_b_out_valid              : std_logic;
    signal pred_b_out_ready              : std_logic;
    signal pred_b_out_data               : std_logic_vector(LANE_COUNT-1 downto 0);
+
+   signal acc_pred_b_out_data           : std_logic;
 begin
     
   -- Buffer to hold predicated as transation indexes  
@@ -101,11 +106,18 @@ begin
         out_valid <= '0';
         out_strb <= (others => '0');
         in_ready_s <= pred_b_out_valid and out_ready;
-        
        if in_valid = '1' then
          if pred_b_out_valid = '1' then
+          acc_pred_b_out_data <= ((pred_b_out_data(0) and pred_b_out_data(1) and pred_b_out_data(10) and pred_b_out_data(16)) or 
+                                  (pred_b_out_data(2) and pred_b_out_data(3) and pred_b_out_data(11) and pred_b_out_data(16)) or
+                                  (pred_b_out_data(4) and pred_b_out_data(5) and pred_b_out_data(12) and pred_b_out_data(16))) and
+                                 ((pred_b_out_data(6) and pred_b_out_data(7) and pred_b_out_data(13) and pred_b_out_data(17)) or
+                                  (pred_b_out_data(6) and pred_b_out_data(8) and pred_b_out_data(14) and pred_b_out_data(17)) or
+                                  (pred_b_out_data(6) and pred_b_out_data(9) and pred_b_out_data(15) and pred_b_out_data(17))) and
+                                   pred_b_out_data(18) and pred_b_out_data(19) and pred_b_out_data(20);
            out_valid <= or_reduce(pred_b_out_data);
-           out_strb <= pred_b_out_data;
+
+           out_strb(0) <= acc_pred_b_out_data;
            if or_reduce(pred_b_out_data) = '0' then
              in_ready_s <= '1';
            end if;
